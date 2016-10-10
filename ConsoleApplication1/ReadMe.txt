@@ -32,3 +32,19 @@ Deploy-time
 	Admin driven
 		By hand (administration console)
 		PowerShell
+
+Queue Persistence
+Durable
+	Message saved to disk
+	Message still alive after server restart
+	Performance overhead
+Non-Durable
+	Message only held in memory
+	Message disappears after server reboot
+	Better performance
+	
+Queueing Patters				
+	One way messaging
+	Worker Queues
+	Publish Subscribe
+	RPC
