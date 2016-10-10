@@ -10,7 +10,8 @@ namespace Client
         private const string UserName = "guest";
         private const string Password = "guest";
         private const string QueueName = "Module2.Sample2";
-        private const string ExchangeName = "";
+        //private const string ExchangeName = "";
+        private const string ExchangeName = "Module2.Sample3.Exchange";
         private const bool IsDurable = true;
 
         private const string VirtualHost = "";
@@ -67,7 +68,8 @@ namespace Client
 
             byte[] messageBuffer = Encoding.Default.GetBytes(message);
 
-            _model.BasicPublish(ExchangeName, QueueName, properties, messageBuffer);
+            //_model.BasicPublish(ExchangeName, QueueName, properties, messageBuffer);
+            _model.BasicPublish(ExchangeName, "", properties, messageBuffer);
         }
 
         public void Dispose()

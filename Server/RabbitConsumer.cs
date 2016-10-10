@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using RabbitMQ.Client.MessagePatterns;
 
 namespace Server
 {
@@ -10,7 +10,8 @@ namespace Server
         private const string HostName = "localhost";
         private const string UserName = "guest";
         private const string Password = "guest";
-        private const string QueueName = "Module2.Sample2";
+        //private const string QueueName = "Module2.Sample2";
+        private const string QueueName = "Module2.Sample3.Queue1";
         private const string ExchangeName = "";
         private const bool IsDurable = true;
 
@@ -24,12 +25,12 @@ namespace Server
         private ConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IModel _model;
+        private Subscription _subscription;
 
         public RabbitConsumer()
         {
             DisplaySettings();
             SetupRabbitMq();
-
         }
 
         private void DisplaySettings()
@@ -65,6 +66,7 @@ namespace Server
 
         public void Start()
         {
+            /*
             var consumer = new QueueingBasicConsumer(_model);
             _model.BasicConsume(QueueName, false, consumer);
 
@@ -76,6 +78,24 @@ namespace Server
 
                 Console.WriteLine("Message Received - {0}", message);
                 _model.BasicAck(deliveryArgs.DeliveryTag, false);
+            }
+            */
+
+            _subscription = new Subscription(_model, QueueName, false);
+            var consumer = new ConsumeDelegate(Poll);
+            consumer.Invoke();
+        }
+
+        private delegate void ConsumeDelegate();
+
+        private void Poll()
+        {
+            while (Enabled)
+            {
+                var deliverArgs = _subscription.Next();
+                var message = Encoding.Default.GetString(deliverArgs.Body);
+                Console.WriteLine("Message Received - {0}", message);
+                _subscription.Ack(deliverArgs);
             }
         }
 
